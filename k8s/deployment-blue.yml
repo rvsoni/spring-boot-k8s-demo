@@ -1,0 +1,53 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-k8s-demo-blue
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: spring-boot-k8s-demo
+      version: v1
+      color: blue
+  replicas: 4
+  strategy:
+    type: RollingUpdate
+  template:
+    metadata:
+      labels:
+        app: spring-boot-k8s-demo
+        version: v1
+        color: blue
+    spec:
+      containers:
+      - name: spring-boot-k8s-demo
+        image: spring-boot-k8s-demo
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: spring-port
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: dev
+          - name: k8s-color
+            value: blue
+          - name: k8s-env
+            valueFrom:
+              configMapKeyRef:
+                name: spring-boot-k8s-demo-config-dev
+                key: k8s-config-env
+          - name: k8s-env-dburl
+            valueFrom:
+              configMapKeyRef:
+                name: spring-boot-k8s-demo-config-dev
+                key: k8s-config-dburl
+          - name: k8s-env-dbuser
+            valueFrom:
+              secretKeyRef:
+                name: spring-boot-k8s-demo-secret-dev
+                key: k8s-secret-dbuser
+          - name: k8s-env-dbpassword
+            valueFrom:
+              secretKeyRef:
+                name: spring-boot-k8s-demo-secret-dev
+                key: k8s-secret-dbpassword

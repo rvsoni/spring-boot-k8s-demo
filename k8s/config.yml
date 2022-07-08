@@ -1,0 +1,21 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: spring-boot-k8s-demo-config-dev
+  namespace: default
+data:
+  k8s-config-env: dev
+  k8s-config-dburl: jdbc:postgresql://192.168.29.151:5432/k8s
+  
+---
+#MySqlDevRootUser
+#AComplexDevPasswrd
+apiVersion: v1
+kind: Secret
+metadata:
+  name: spring-boot-k8s-demo-secret-dev
+  namespace: default
+data:
+  k8s-secret-dbuser: azhz
+  k8s-secret-dbpassword: azhz
+  

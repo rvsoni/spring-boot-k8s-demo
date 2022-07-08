@@ -1,0 +1,60 @@
+logging:
+  level:
+    com.zaxxer.hikari.HikariConfig: DEBUG 
+
+rvsoni:
+  app:
+    env: local
+    db-url: jdbc:postgresql://localhost:5432/k8s
+    db-user: k8s
+    db-password: k8s
+    
+spring:
+  application:
+    name: Spring-boot-k8s-demo
+  datasource:
+    url: ${rvsoni.app.db-url} #jdbc:postgresql://192.168.29.151:5432/iot
+    password: ${rvsoni.app.db-password}
+    username: ${rvsoni.app.db-user}
+  jpa:
+    generate-ddl: true
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        default_schema: k8s
+        dialect: org.hibernate.dialect.PostgreSQL10Dialect
+        format_sql: true
+
+management:
+  info:
+    env:
+      enabled: true
+  endpoints:
+    enabled-by-default: true
+    web:
+     exposure:
+       include: info, health, env
+
+info:
+  application:
+    name: ${spring.application.name}
+    description: K8s is very cool!
+    hoasname: ${hostname}
+    deployment-env: ${rvsoni.app.env}
+    db-url: ${rvsoni.app.db-url}
+    deployment-color: ${k8s-color}
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+rvsoni:
+  app:
+    env: ${k8s-env}
+    db-url: ${k8s-env-dburl}
+    db-user: ${k8s-env-dbuser}
+    db-password: ${k8s-env-dbpassword}
+    

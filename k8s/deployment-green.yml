@@ -1,0 +1,51 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spring-boot-k8s-demo-green
+  namespace: default
+spec:
+  selector:
+    matchLabels:
+      app: spring-boot-k8s-demo
+      version: v2
+      color: green
+  replicas: 1 # tells deployment to run 2 pods matching the template
+  template:
+    metadata:
+      labels:
+        app: spring-boot-k8s-demo
+        version: v2
+        color: green
+    spec:
+      containers:
+      - name: spring-boot-k8s-demo
+        image: spring-boot-k8s-demo
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 8080
+          name: spring-port
+        env:
+          - name: SPRING_PROFILES_ACTIVE
+            value: dev
+          - name: k8s-color
+            value: green
+          - name: k8s-env
+            valueFrom:
+              configMapKeyRef:
+                name: spring-boot-k8s-demo-config-dev
+                key: k8s-config-env
+          - name: k8s-env-dburl
+            valueFrom:
+              configMapKeyRef:
+                name: spring-boot-k8s-demo-config-dev
+                key: k8s-config-dburl
+          - name: k8s-env-dbuser
+            valueFrom:
+              secretKeyRef:
+                name: spring-boot-k8s-demo-secret-dev
+                key: k8s-secret-dbuser
+          - name: k8s-env-dbpassword
+            valueFrom:
+              secretKeyRef:
+                name: spring-boot-k8s-demo-secret-dev
+                key: k8s-secret-dbpassword
